@@ -2,7 +2,7 @@
 from fastapi.responses import JSONResponse
 
 
-def customResponse(status:int, msg:str , success=True, data=None,):
+def customResponse(status:int, msg:str="" , success=True, data=None,):
 
     return JSONResponse(
         status_code=status,

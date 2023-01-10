@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy.orm import Session
 from models.model import User
 from authentication.hashing import checkPassword
@@ -14,13 +15,13 @@ async def does_email_exist(email:str, db:Session):
 
 
 
-async def create_user(user:User,db:Session, verify_id:str):
+async def create_user(user:User,db:Session, verify_id:str, expire:datetime):
     from controller.hex import generate_hex
     from authentication.hashing import hashPassword
 
     new_user =user_table(user_id=generate_hex(6),fullname=user.fullname,email=user.email,\
     
-    password=hashPassword(user.password), id_verify=verify_id)
+    password=hashPassword(user.password), token_verification=verify_id, id_expire=expire)
 
     db.add(new_user)
 

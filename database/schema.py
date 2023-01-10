@@ -1,8 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP, text , ForeignKey, DECIMAL, SmallInteger
-from sqlalchemy.orm import relationship
 from .database import Base
-from controller.hex import generate_hex
-
 from datetime import datetime
 
 
@@ -13,7 +10,7 @@ class User(Base):
 
     user_id = Column(String(12), primary_key=True, nullable=False, index=True)
 
-    fullname = Column(String(20), nullable=False, unique=True)
+    fullname = Column(String(20), nullable=False)
 
     email = Column(String(200), nullable=False, unique=True)
 
@@ -27,7 +24,7 @@ class User(Base):
 
     id_expire = Column(TIMESTAMP)
 
-    date_added = Column(TIMESTAMP, server_default=text("NOW()"))
+    date_added = Column(TIMESTAMP, default=datetime.utcnow())
 
     # cart_add = relationship("Cart", back_populates="user")
 
