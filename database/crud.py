@@ -40,3 +40,16 @@ async def is_user_verified(email:str, db:Session):
     user:user_table =  db.query(user_table).filter(user_table.email == email).first()
 
     return user.is_verified
+
+
+
+async def get_verify_token_and_expire(email:str, db:Session):
+    result = db.query(user_table.token_verification, user_table.id_expire).filter(user_table.email == email).first()
+
+
+    return result[0], result[1]
+
+async def get_expire(email:str, db:Session):
+    expire = db.query(user_table.id_expire).filter(user_table.email == email ).first()[0]
+
+    return expire

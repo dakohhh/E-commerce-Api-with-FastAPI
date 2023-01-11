@@ -1,3 +1,4 @@
+import os
 import datetime
 from fastapi import APIRouter, Depends, status, Request
 from sqlalchemy.orm import Session
@@ -8,9 +9,12 @@ from exceptions.custom_execption import (UserExistExecption)
 from response.response import customResponse
 from controller.hex import generate_hex
 from controller.mail import send_email
+from dotenv import load_dotenv
 from authentication.oauth2 import get_current_user, get_verified_user
+from aes import AESCipher
 
 
+load_dotenv()
 
 
 
@@ -22,23 +26,29 @@ user = APIRouter(
 
 @user.post("/signup")
 async def signup(user:User, request:Request , db:Session=Depends(get_db)):
-    print(user.fullname, user.email, user.password)
 
     if await does_email_exist(user.email, db):
         raise UserExistExecption("Email already exists")
-
     
     verify_id = generate_hex(20)
     expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=5)
 
     await create_user(user, db, verify_id, expire)
 
-    # await send_email([user.email], "wisdompassword3456")
+    cipher = AESCipher(os.getenv("ADMIN_SECRET_KEY"))
+
+    token = cipher.encrypt(verify_id).decode()
+
+    verification_link = f"{request.client.host}:{8000}/verification?email={user.email}&tokenid={token}"
+
+    # await send_email([user.email], verification_link, user.fullname)
+
     
     return customResponse(
         status.HTTP_200_OK, 
         "Account created, verification email has been sent", 
-        data=f"{request.client.host}:{request.client.port}/verification?email={user.email}&tokenid={verify_id}")
+        data=verification_link
+        )
 
 
 

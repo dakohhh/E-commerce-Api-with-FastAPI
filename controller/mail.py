@@ -3,7 +3,7 @@ from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from dotenv import load_dotenv
 from pydantic import BaseModel, EmailStr
 from typing import List
-
+from .mail_template import email_verification_temp
 load_dotenv()
 
 
@@ -26,12 +26,12 @@ conf = ConnectionConfig(
 
 )
 
-async def send_email(email:EmailSchema, verificationLink:str):
+async def send_email(email:EmailSchema, verification_link:str, name:str):
 
     message = MessageSchema(
-        subject="Testing Yeah",
+        subject="Verify Your Email",
         recipients= email, 
-        body= f"<p> Pussy yeah {verificationLink}</p>",
+        body= email_verification_temp.format(VERIFICATION_LINK=verification_link) ,
         subtype= "html"
     )
 
