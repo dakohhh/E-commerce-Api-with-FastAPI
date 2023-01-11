@@ -19,27 +19,24 @@ verification = APIRouter(
 @verification.post("/verification")
 async def verify(email:str, tokenid:str, db:Session=Depends(get_db)):
 
+    
     if not await does_email_exist(email, db):
         raise NotFoundError("Email does not exist")
 
-    
-    
-    result = await get_verify_token_and_expire(email, db)
+    import time
+    current_time = time.time()
+    verify_token, expire_time = await get_verify_token_and_expire(email, db)
 
-
-
-    if tokenid != get_token:
+    if verify_token != tokenid:
         raise CredentialsException("Token is invalid")
-
-    # print(str(tokenid).encode("utf-8"))
     
-    # _token = cipher.decrypt(b"rwfwfefwe")
-    #check if id is in datebase
-
-
-    # print(verify_email_id(email, _token, db))
+    if current_time >= expire_time.timestamp():
+        raise CredentialsException("Token has expired")
+    
+  
 
     #set verified to true 
+    
 
     # set token_ver id to null
 

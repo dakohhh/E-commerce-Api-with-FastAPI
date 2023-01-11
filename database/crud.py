@@ -53,3 +53,6 @@ async def get_expire(email:str, db:Session):
     expire = db.query(user_table.id_expire).filter(user_table.email == email ).first()[0]
 
     return expire
+
+async def update_user_verification(email, db:Session):
+    db.query().update()
