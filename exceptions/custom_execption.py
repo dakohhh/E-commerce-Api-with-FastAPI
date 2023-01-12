@@ -100,17 +100,17 @@ async def credentail_exception_handler(request: Request, exception: CredentialsE
 
 
 
-class BlogException(Exception):
+class BadRequestException(Exception):
     def __init__(self, msg: str):
         self.msg = msg
 
 
 
-async def blog_exception_handler(request: Request, exception: BlogException):
+async def bad_request_exception_handler(request: Request, exception: BadRequestException):
     return JSONResponse(
-        status_code=status.HTTP_406_NOT_ACCEPTABLE,
+        status_code=status.HTTP_400_BAD_REQUEST,
         content={
-            "status": status.HTTP_406_NOT_ACCEPTABLE,
+            "status": status.HTTP_400_BAD_REQUEST,
             "msg": exception.msg,
             "success": False
         },

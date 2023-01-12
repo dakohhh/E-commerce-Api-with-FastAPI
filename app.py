@@ -25,7 +25,7 @@ app.add_exception_handler(UnauthorizedExecption, unauthorized_exception_handler)
 app.add_exception_handler(ServerErrorException, server_exception_handler)
 app.add_exception_handler(NotFoundError, not_found)
 app.add_exception_handler(CredentialsException, credentail_exception_handler)
-app.add_exception_handler(BlogException, blog_exception_handler)
+app.add_exception_handler(BadRequestException, bad_request_exception_handler)
 
 
 

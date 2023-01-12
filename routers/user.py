@@ -11,7 +11,7 @@ from controller.hex import generate_hex
 from controller.mail import send_email
 from dotenv import load_dotenv
 from authentication.oauth2 import get_current_user, get_verified_user
-from aes import AESCipher
+
 
 
 load_dotenv()
@@ -30,25 +30,20 @@ async def signup(user:User, request:Request , db:Session=Depends(get_db)):
     if await does_email_exist(user.email, db):
         raise UserExistExecption("Email already exists")
     
-    verify_id = generate_hex(20)
+    token = generate_hex(20)
     expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=5)
 
-    await create_user(user, db, verify_id, expire)
+    await create_user(user, db, token, expire)
 
-    cipher = AESCipher(os.getenv("ADMIN_SECRET_KEY"))
 
-    token = cipher.encrypt(verify_id).decode()
-
-    verification_link = f"{request.client.host}:{8000}/verification?email={user.email}&tokenid={token}"
-
-    # await send_email([user.email], verification_link, user.fullname)
-
+    verification_link = f"{request.client.host}:{8000}/verification?email={user.email}&token={token}"
     
-    return customResponse(
-        status.HTTP_200_OK, 
-        "Account created, verification email has been sent", 
-        data=verification_link
-        )
+    # send email
+    return customResponse(status.HTTP_200_OK, "Account created, verification email has been sent", data=verification_link)
+
+
+
+
 
 
 
