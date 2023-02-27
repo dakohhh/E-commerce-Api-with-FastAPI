@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
 
@@ -25,3 +25,6 @@ async def get_verified_user(current_user:TokenData=Depends(get_current_user), db
         raise UnauthorizedExecption("User not verified")
 
     return current_user
+
+
+

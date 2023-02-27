@@ -1,4 +1,5 @@
 from typing import Optional
+from fastapi import Form
 from pydantic import BaseModel
 
 
@@ -22,6 +23,19 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     email: Optional[str] =None
 
+
+
+
+class UserData(BaseModel):
+    fullname:str
+    email = str
+    is_verified = bool
+    role = int
+
+
+
+
+
 class Email(BaseModel):
     email:str
 
@@ -29,3 +43,19 @@ class Email(BaseModel):
 
 class Password(BaseModel):
     password:str
+
+
+
+class UserForm:
+    def __init__(self,
+        fullname:str= Form(),
+        email:str= Form(),
+        password: str = Form()
+        ):
+
+
+        self.fullname = fullname
+        self.email = email
+        self.password = password
+
+        

@@ -40,11 +40,11 @@ class Products(Base):
     
     category = Column(String(30), index=True)
     
+    description = Column(String(200), index=True)
+
     original_price = Column(DECIMAL(7, 2), nullable=False)
 
-    new_price = Column(DECIMAL(7, 2), nullable=True)
-
-    discount = Column(Integer, nullable=True)
+    discount = Column(Integer, nullable=True, default=3)
     
     date_added =  Column(TIMESTAMP, server_default=text("NOW()"))
     
@@ -61,3 +61,23 @@ class Cart(Base):
     date_added = Column(TIMESTAMP, server_default=text("NOW()"))
 
     # user = relationship("User", back_populates="cart_added")
+
+
+
+
+
+class Session(Base):
+
+    __tablename__ = "user_sessions"
+
+    session_id = Column(String(15), primary_key=True, index=True)
+
+    session_data = Column(String(200), nullable=False, index=True)
+
+    expiry_date = Column(TIMESTAMP)
+
+    
+
+    
+
+    

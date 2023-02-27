@@ -32,3 +32,10 @@ def verify_access_token(token:str):
 
 
 
+
+def verify_token(token:str):
+    try:
+        payload = jwt.decode(token, str(os.getenv("ADMIN_SECRET_KEY")), algorithms=["HS256"])
+        return TokenData(email =payload["user"])
+    except:
+        return None

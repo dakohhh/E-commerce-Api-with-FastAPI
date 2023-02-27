@@ -1,5 +1,6 @@
 import datetime
 from fastapi import APIRouter, Depends, Request, status
+from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from controller.hex import generate_hex
 from database.database import get_db
@@ -19,9 +20,11 @@ verification = APIRouter(
     tags=["Verification"]
 )
 
+templates = Jinja2Templates(directory="templates")
 
-@verification.post("/verification")
-async def verify_email(email:str, token:str, db:Session=Depends(get_db)):
+
+@verification.get("/verification")
+async def verify_email(request:Request, email:str, token:str, db:Session=Depends(get_db)):
 
     
     if not await does_email_exist(email, db):
@@ -45,7 +48,9 @@ async def verify_email(email:str, token:str, db:Session=Depends(get_db)):
 
     await update_token_and_expire(email, None, None, db)
 
-    return customResponse(status.HTTP_200_OK, "Account successfully verified")
+    return templates.TemplateResponse("verify.html", {"request": request})
+
+    
 
 
 
