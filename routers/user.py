@@ -62,7 +62,7 @@ async def dashboard_page(request:Request, user:UserData=Depends(get_user)):
 
     if user == None:return redirect("/login")
     
-    print(user)
+    print(user.fullname)
     return templates.TemplateResponse("dashboard.html", {"request":request})
 
 

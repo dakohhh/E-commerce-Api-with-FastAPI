@@ -21,6 +21,8 @@ templates = Jinja2Templates(directory="templates")
 
 @auth.get("/login")
 async def login_page(request:Request):
+    if request.session.get("SESSION_ID"):
+        return redirect("/dashboard")
 
     get_flash_msg = parse_request_cookies(request, "msg")
     context = {"request": request, "get_flash_msg":get_flash_msg}
@@ -29,6 +31,7 @@ async def login_page(request:Request):
 
 @auth.post("/login")
 async def login(request:Request, request_form:OAuth2PasswordRequestForm=Depends(), db:Session=Depends(get_db)):
+    
 
     if not await does_email_exist(request_form.username, db):
         
@@ -61,11 +64,11 @@ async def login(request:Request, request_form:OAuth2PasswordRequestForm=Depends(
 
 @auth.get("/logout")
 def logout(request:Request):
-    if request.session["SESSION_ID"]:
+    if request.session.get("SESSION_ID"):
         request.session.pop("SESSION_ID")
-        redirect("/login")
+        return redirect("/login")
     else:
-        redirect("/logout")
+        return redirect("/login")
 
 
 

@@ -4,6 +4,7 @@ from .tokens import verify_token
 from database.crud import get_session_data, get_user_data
 from database.database import get_db
 from database.schema import Session as session_table
+from models.model import UserData
 
 
 async def get_user(request:Request, db:Session=Depends(get_db)):
@@ -15,12 +16,14 @@ async def get_user(request:Request, db:Session=Depends(get_db)):
     
     token, expire = await get_session_data(session_id, db)
 
-    user = verify_token(token)
+    user_email = verify_token(token)
 
-    if user == None:
+    if user_email == None:
         return None
 
 
-    user = await get_user_data(user.email, db)
+    user_data = await get_user_data(user_email.email, db)
+    
+    user_data = UserData(fullname=user_data[0], email=user_data[1], is_verified=user_data[2], role=user_data[3])
 
-    return user
+    return user_data

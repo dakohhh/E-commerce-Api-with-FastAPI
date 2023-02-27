@@ -28,9 +28,9 @@ class TokenData(BaseModel):
 
 class UserData(BaseModel):
     fullname:str
-    email = str
-    is_verified = bool
-    role = int
+    email: str
+    is_verified: bool
+    role:int
 
 
 
