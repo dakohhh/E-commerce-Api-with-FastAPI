@@ -99,3 +99,14 @@ async def get_session_data(session_id:str, db:Session):
     session_data = db.query(session_table.session_data, session_table.expiry_date).filter(session_table.session_id == session_id).first()
 
     return session_data
+
+
+
+async def delete_session_data(session_id:str, db:Session):
+    db.query(session_table).filter(session_table.session_id == session_id).delete(synchronize_session=False)
+
+    db.commit()
+
+
+async def get_all_product():
+    products = db.query()

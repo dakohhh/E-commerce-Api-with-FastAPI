@@ -24,6 +24,7 @@ async def login_page(request:Request):
     if request.session.get("SESSION_ID"):
         return redirect("/dashboard")
 
+
     get_flash_msg = parse_request_cookies(request, "msg")
     context = {"request": request, "get_flash_msg":get_flash_msg}
     return templates.TemplateResponse("login.html", context)
@@ -52,7 +53,7 @@ async def login(request:Request, request_form:OAuth2PasswordRequestForm=Depends(
 
     session_id = generate_hex(6)
 
-    session_expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=5)
+    session_expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=2)
 
     await add_user_sessions(session_id, access_token, session_expire, db)
     

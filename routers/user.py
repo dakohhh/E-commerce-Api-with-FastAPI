@@ -60,10 +60,16 @@ async def signup(request:Request, user:UserForm=Depends() , db:Session=Depends(g
 @user.get("/dashboard")
 async def dashboard_page(request:Request, user:UserData=Depends(get_user)):
 
-    if user == None:return redirect("/login")
+    if user == None:
+        return redirect("/login")
+
+    elif user == False:
+        request.session.pop("SESSION_ID")
+        return flash("/login", "danger", "The session has expired")
     
-    print(user.fullname)
-    return templates.TemplateResponse("dashboard.html", {"request":request})
+    
+    # print(user.fullname)
+    return templates.TemplateResponse("dashboard.html", {"request":request, "user":user})
 
 
 
