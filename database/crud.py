@@ -3,7 +3,8 @@ from controller.hex import generate_hex
 from sqlalchemy.orm import Session
 from models.model import User
 from authentication.hashing import checkPassword, hashPassword
-from .schema import (User as user_table, Products as product_table , Cart as cart_table, Session as session_table)
+from .schema import (User as user_table, Products as product_table , Cart as cart_table, 
+Session as session_table, SavedProducts as save_table)
 
 
 
@@ -137,3 +138,31 @@ async def get_cart_items(user_id:str, db:Session):
     cart_items = db.query(cart_table).filter(cart_table.user_id == user_id).all()
 
     return cart_items
+
+
+
+async def get_saved_products(user_id:str, db:Session):
+    saved_items = db.query(save_table).filter(save_table.user_id == user_id).all()
+
+    return saved_items
+
+    
+
+
+
+async def add_save_product(product_id:str, user_id:str, db:Session):
+    new_item = save_table(product_id=product_id, user_id=user_id)
+
+    db.add(new_item)
+
+    db.commit()
+
+    db.refresh(new_item)
+
+
+
+    
+async def remove_save_product(save_id:str, db:Session):
+    db.query(save_table).filter(save_table.save_id == save_id).delete(synchronize_session=False)
+
+    db.commit()

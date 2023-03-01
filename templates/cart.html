@@ -131,7 +131,7 @@
 				{% for cart_id, product_id in cart_items.items() %}
 				{% if product_id == product.product_id %}
 				<div style="float: left;">
-					<form action="/cart/remove?id={{ cart_id }}" method="POST">
+					<form action="/cart/remove?cart_id={{ cart_id }}" method="POST">
 						<button type="submit" class="btn btn-primary">Remove from cart</button>
 					</form>
 				</div>
@@ -141,30 +141,18 @@
 				{%else%}
 
 				<div style="float: left;">
-					<form action="/cart?id={{ product.product_id }}" method="POST">
+					<form action="/cart?product_id={{ product.product_id }}" method="POST">
 						<button type="submit" class="btn btn-primary">Add to cart</button>
 					</form>
 				</div>
 
 				{% endif %}
-				
-				{% if product.product_id in saved_items.values() %}
-				{% for save_id, product_id in saved_items.items() %}
-				{% if product_id == product.product_id %}
+
 				<div style="float: right;">
-					<form action="/save_product/remove?id={{ save_id }}" method="POST">
-						<button name="save" type="submit" value="save item" class="btn btn-outline-primary"><i class="fas fa-check"></i> Saved</button>
+					<form action="">
+						<button name="save" type="submit" value="save item" class="btn btn-outline-primary"><i class="fas fa-heart"></i> Save</button>
 					</form>
 				</div>
-				{% endif %}
-				{% endfor %}
-				{% else %}
-				<div style="float: right;">
-					<form action="/save_product?id={{ product.product_id }}" method="POST">
-						<button name="save" type="submit" value="save item" class="btn btn-outline-success"><i class="fas fa-heart"></i> Save</button>
-					</form>
-				</div>
-				{% endif %}
 
 
 			</div>

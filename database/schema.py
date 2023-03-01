@@ -64,6 +64,17 @@ class Cart(Base):
 
 
 
+class SavedProducts(Base):
+    __tablename__ = "saved_products"
+
+    save_id = Column(Integer, primary_key=True, autoincrement=True, index=True)
+
+    product_id =  Column(String(100),  ForeignKey("products.product_id"), nullable=False)
+
+    user_id = Column(String(100),  ForeignKey("users.user_id"), nullable=False)
+
+    date_added = Column(TIMESTAMP, server_default=text("NOW()"))
+
 
 
 class Session(Base):
@@ -76,7 +87,9 @@ class Session(Base):
 
     expiry_date = Column(TIMESTAMP)
 
-    
+
+
+
 
     
 

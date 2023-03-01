@@ -1,13 +1,9 @@
-import datetime
 from fastapi import APIRouter, Depends, Request
 from fastapi.templating import Jinja2Templates
-from response.response import parse_request_cookies
 from sqlalchemy.orm import Session
 from database.database import get_db
-from database.crud import does_email_exist, create_user, get_all_product, add_product_to_cart, get_cart_items, remove_product_from_cart
-from models.model import UserForm, UserData
-from response.response import flash, redirect
-from controller.hex import generate_hex
+from database.crud import get_all_product, get_cart_items, get_saved_products
+from models.model import UserData
 from dotenv import load_dotenv
 from authentication.dependencies import get_user
 
@@ -30,11 +26,15 @@ async def dashboard_page(request:Request, user:UserData=Depends(get_user), db:Se
 
     products = await get_all_product(db)
     cart_items = await get_cart_items(user.user_id, db)
+    saved_items = await get_saved_products(user.user_id, db)
 
-    cart_items = {i.cart_id : i.product_id for i in cart_items}
+    cart_items = {items.cart_id : items.product_id for items in cart_items}
+
+    saved_items = {items.save_id : items.product_id for items in saved_items}
     
+
     
-    context= {"request":request, "user":user, "products":products, "cart_items":cart_items}
+    context= {"request":request, "user":user, "products":products, "cart_items":cart_items, "saved_items":saved_items}
 
     return templates.TemplateResponse("dashboard.html", context)
 
