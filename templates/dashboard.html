@@ -32,8 +32,8 @@
   justify-content: center;
   padding: 5px;
   box-sizing: border-box;
-  width: 300px;
-  height: 200px;
+  width: 350px;
+  height: 425px;
   transition: all linear 200ms;
 }
 .carde:hover{
@@ -43,9 +43,16 @@
   box-shadow: 1px 1px 10px rgba(0,0,0,.3);
   cursor: pointer;
 }
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+}
   </style>
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
 	<div class="container-fluid">
 	  <a class="navbar-brand" style="color:black" href="#"><strong>WizShops</strong></a>
 	  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +70,7 @@
 				<!-- Icon -->
 				<a class="text-reset me-3" href="#">
 					<i class="fas fa-shopping-cart"></i>
-					<span class="badge rounded-pill badge-notification bg-danger">1</span>
+					<span class="badge rounded-pill badge-notification bg-danger">{{ cart_items|length }}</span>
 				</a>
 			</div>
 			<div class="dropdown" style="margin-right: 80px;">
@@ -86,7 +93,7 @@
 				<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 					<li><a class="dropdown-item" href="#"><i class="fas fa-heart"></i> Saved Items</a></li>
 					<li><a class="dropdown-item" href="#">Settings</a></li>
-					<li><a class="dropdown-item" href="{{ url_for("logout") }}">Logout</a></li>
+					<li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
 				</ul>
 			</div>
 			
@@ -98,65 +105,66 @@
 
 
 <br>
+
+
 <div class="container">
 
 <h1>Welcome, {{ user.fullname }}</h1>
 <br>
+
+
 <div class="container d-flex flex-wrap align-items-center">
 
-	<div class="m-2 carde">
-		<div class="card-body">
-			<form>
-				<h5 class="card-title">Card title</h5>
-				<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-				<button type="submit" class="btn btn-primary">Add To Cart</button>
+	{% for product in products %}
+		<div class="m-2 carde">
+			<div class="card-body">
+				<img src="https://mdbcdn.b-cdn.net/img/new/standard/nature/111.webp" class="img-fluid center rounded" height="100px" width="300px" style="margin-bottom: 15px;">
+				<form>
+					<h5 class="card-title" style="text-align: center;">{{ product.product_name }}</h5>
+					<p class="card-text">{{ product.description }}</p>
+					
+					<h5>Price: ${{ product.original_price }}</h3>
+					<h1 style="margin-top: 20px"></h1>
+				</form>
+				
+				{% if product.product_id in cart_items.values() %}
+				{% for cart_id, product_id in cart_items.items() %}
+				{% if product_id == product.product_id %}
+				<div style="float: left;">
+					<form action="/cart/remove?cart_id={{ cart_id }}" method="POST">
+						<button type="submit" class="btn btn-primary">Remove from cart</button>
+					</form>
+				</div>
+				{% endif %}
+				{% endfor %}
 
-				<button type="button" class="btn btn-outline-primary"><i class="fas fa-heart"></i> Save</button>
-			</form>
+				{%else%}
+
+				<div style="float: left;">
+					<form action="/cart?product_id={{ product.product_id }}" method="POST">
+						<button type="submit" class="btn btn-primary">Add to cart</button>
+					</form>
+				</div>
+
+				{% endif %}
+
+				<div style="float: right;">
+					<form action="">
+						<button name="save" type="submit" value="save item" class="btn btn-outline-primary"><i class="fas fa-heart"></i> Save</button>
+					</form>
+				</div>
+
+
+			</div>
 		</div>
-
-	</div>
-
-	<div class="m-2 carde">
-		<div class="card-body">
-			<h5 class="card-title">Card title</h5>
-			<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-			<button type="button" class="btn btn-primary">Add To Cart</button>
-
-			<button type="button" class="btn btn-outline-primary"><i class="fas fa-heart"></i> Save</button>
-		</div>
-
-	</div>
-
-	<div class="m-2 carde">
-		<div class="card-body">
-			<h5 class="card-title">Card title</h5>
-			<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-			<button type="button" class="btn btn-primary">Add To Cart</button>
-
-			<button type="button" class="btn btn-outline-primary"><i class="fas fa-heart"></i> Save</button>
-		</div>
-
-	</div>
-
-	<div class="m-2 carde">
-		<div class="card-body">
-			<h5 class="card-title">Card title</h5>
-			<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-			<button type="button" class="btn btn-primary">Add To Cart</button>
-
-			<button type="button" class="btn btn-outline-primary"><i class="fas fa-heart"></i> Save</button>
-		</div>
-
-	</div>
-
-
+	{% endfor %}
 
 
 	
 </div>
 </body>
 <script type="text/javascript" src="{{ url_for('static', path='js/mdb.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', path='js/script.js') }}"></script>
     <!-- Custom scripts -->
 
  

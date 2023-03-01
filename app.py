@@ -4,7 +4,8 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 from routers.user import user as user
-from routers.login import auth
+from routers.authentication import auth
+from routers.shopping import shopping
 from routers.verification import verification
 from database.schema import Base
 from database.database import engine
@@ -19,6 +20,7 @@ app = FastAPI()
 
 app.include_router(user)
 app.include_router(auth)
+app.include_router(shopping)
 app.include_router(verification)
 app.add_exception_handler(UserExistExecption, user_exist_exception_handler)
 app.add_exception_handler(UnauthorizedExecption, unauthorized_exception_handler)
@@ -26,6 +28,8 @@ app.add_exception_handler(ServerErrorException, server_exception_handler)
 app.add_exception_handler(NotFoundError, not_found)
 app.add_exception_handler(CredentialsException, credentail_exception_handler)
 app.add_exception_handler(BadRequestException, bad_request_exception_handler)
+app.add_exception_handler(RedirectException, redirect_exeception_handler)
+app.add_exception_handler(FlashException, flash_exeception_handler)
 
 app.add_middleware(SessionMiddleware, secret_key="RapemanBruh", max_age=None)
 

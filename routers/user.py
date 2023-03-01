@@ -4,12 +4,11 @@ from fastapi.templating import Jinja2Templates
 from response.response import parse_request_cookies
 from sqlalchemy.orm import Session
 from database.database import get_db
-from database.crud import does_email_exist, create_user
-from models.model import TokenData, UserForm, UserData
+from database.crud import does_email_exist, create_user, get_all_product, add_product_to_cart, get_cart_items, remove_product_from_cart
+from models.model import UserForm, UserData
 from response.response import flash, redirect
 from controller.hex import generate_hex
 from dotenv import load_dotenv
-from authentication.oauth2 import get_verified_user
 from authentication.dependencies import get_user
 
 load_dotenv()
@@ -24,52 +23,24 @@ user = APIRouter(
 templates = Jinja2Templates(directory="templates")
 
 
-@user.get("/signup")
-async def signup_page(request:Request):
-
-    get_flash_msg = parse_request_cookies(request, "msg")
-
-    context = {"request": request, "get_flash_msg": get_flash_msg}
-
-    return templates.TemplateResponse("signup.html", context)
-
-
-
-@user.post("/signup")
-async def signup(request:Request, user:UserForm=Depends() , db:Session=Depends(get_db)):
-
-    if await does_email_exist(user.email, db):
-        return flash("/signup", "danger", "Email already exists")
-    
-    token = generate_hex(20)
-    expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=5)
-
-    await create_user(user, db, token, expire)
-    
-    verification_link = f"{request.client.host}:{8000}/verification?email={user.email}&token={token}"
-    
-    # send email
-
-    return flash("/signup", "success", "Email verification link sent")
-
-
-
-
 
 
 @user.get("/dashboard")
-async def dashboard_page(request:Request, user:UserData=Depends(get_user)):
+async def dashboard_page(request:Request, user:UserData=Depends(get_user), db:Session=Depends(get_db)):
 
-    if user == None:
-        return redirect("/login")
+    products = await get_all_product(db)
+    cart_items = await get_cart_items(user.user_id, db)
 
-    elif user == False:
-        request.session.pop("SESSION_ID")
-        return flash("/login", "danger", "The session has expired")
+    cart_items = {i.cart_id : i.product_id for i in cart_items}
     
     
-    # print(user.fullname)
-    return templates.TemplateResponse("dashboard.html", {"request":request, "user":user})
+    context= {"request":request, "user":user, "products":products, "cart_items":cart_items}
+
+    return templates.TemplateResponse("dashboard.html", context)
+
+
+
+
 
 
 

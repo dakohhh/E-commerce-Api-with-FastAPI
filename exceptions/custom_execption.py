@@ -1,5 +1,6 @@
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
+from response.response import flash, redirect
 
 
 class UserExistExecption(Exception):
@@ -115,3 +116,26 @@ async def bad_request_exception_handler(request: Request, exception: BadRequestE
             "success": False
         },
     )
+
+
+
+class RedirectException(Exception):
+    def __init__(self, url: str):
+        self.url = url
+
+
+
+async def redirect_exeception_handler(request: Request, exception: RedirectException):
+    return redirect(exception.url)
+
+
+class FlashException(Exception):
+    def __init__(self, url: str, cat:str, msg:str):
+        self.url = url
+        self.cat = cat
+        self.msg = msg
+
+
+
+async def flash_exeception_handler(request: Request, exception: FlashException):
+    return flash(exception.url, exception.cat, exception.msg)

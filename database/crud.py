@@ -46,7 +46,7 @@ async def is_user_verified(email:str, db:Session):
 
 
 async def get_user_data(email:str, db:Session):
-    user = db.query(user_table.fullname, user_table.email, user_table.role, user_table.is_verified).filter(user_table.email == email).first()
+    user = db.query(user_table.user_id, user_table.fullname, user_table.email, user_table.role, user_table.is_verified).filter(user_table.email == email).first()
 
     return user
 
@@ -108,5 +108,32 @@ async def delete_session_data(session_id:str, db:Session):
     db.commit()
 
 
-async def get_all_product():
-    products = db.query()
+async def get_all_product(db:Session):
+    products = db.query(product_table).all()
+
+    return products
+
+
+async def add_product_to_cart(product_id:str, user_id:str, db:Session):
+    new_item = cart_table(product_id=product_id, user_id=user_id)
+
+    db.add(new_item)
+
+    db.commit()
+
+    db.refresh(new_item)
+
+
+async def remove_product_from_cart(cart_id:str, db:Session):
+    db.query(cart_table).filter(cart_table.cart_id == cart_id).delete(synchronize_session=False)
+
+    db.commit()
+    
+
+
+
+async def get_cart_items(user_id:str, db:Session):
+    
+    cart_items = db.query(cart_table).filter(cart_table.user_id == user_id).all()
+
+    return cart_items

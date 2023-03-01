@@ -14,7 +14,7 @@ load_dotenv()
 def create_access_token(data):
     token = jwt.encode(
         {"user":data, 
-        "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
+        "exp": datetime.datetime.utcnow() + datetime.timedelta(days=30)
         }, str(os.getenv("ADMIN_SECRET_KEY")))
     
     return token

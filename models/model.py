@@ -27,6 +27,7 @@ class TokenData(BaseModel):
 
 
 class UserData(BaseModel):
+    user_id:str
     fullname:str
     email: str
     is_verified: bool
@@ -46,6 +47,7 @@ class Password(BaseModel):
 
 
 
+
 class UserForm:
     def __init__(self,
         fullname:str= Form(),
@@ -57,5 +59,7 @@ class UserForm:
         self.fullname = fullname
         self.email = email
         self.password = password
+
+
 
         
