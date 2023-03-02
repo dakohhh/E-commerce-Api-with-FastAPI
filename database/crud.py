@@ -1,10 +1,12 @@
 from datetime import datetime
 from controller.hex import generate_hex
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, aliased
 from models.model import User
 from authentication.hashing import checkPassword, hashPassword
 from .schema import (User as user_table, Products as product_table , Cart as cart_table, 
 Session as session_table, SavedProducts as save_table)
+from sqlalchemy import and_, exists, case, func
+
 
 
 
@@ -166,3 +168,21 @@ async def remove_save_product(save_id:str, db:Session):
     db.query(save_table).filter(save_table.save_id == save_id).delete(synchronize_session=False)
 
     db.commit()
+
+
+
+
+
+
+async def get_save_product_by_user(user_id:str, db:Session):
+    
+    query = db.query(product_table, case([(cart_table.product_id.isnot(None), True)], else_=False).label('in_cart'),
+                      cart_table.cart_id.label('cart_id')).\
+        join(save_table).filter(save_table.user_id == user_id).\
+        outerjoin(cart_table, and_(cart_table.product_id == product_table.product_id, cart_table.user_id == user_id))
+
+
+
+
+    saved_and_in_cart = query.all()
+    return saved_and_in_cart

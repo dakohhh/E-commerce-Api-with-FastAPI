@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP, text , ForeignKey, DECIMAL, SmallInteger
+from sqlalchemy.orm import relationship
 from .database import Base
 from datetime import datetime
 
@@ -26,7 +27,9 @@ class User(Base):
 
     date_added = Column(TIMESTAMP, default=datetime.utcnow())
 
-    # cart_add = relationship("Cart", back_populates="user")
+    carts = relationship("Cart", back_populates="user")
+
+    saved_products = relationship("SavedProducts",  back_populates="user")
 
 
 
@@ -47,7 +50,7 @@ class Products(Base):
     discount = Column(Integer, nullable=True, default=3)
     
     date_added =  Column(TIMESTAMP, server_default=text("NOW()"))
-    
+
 
 class Cart(Base):
     __tablename__ = "carts"
@@ -60,8 +63,11 @@ class Cart(Base):
 
     date_added = Column(TIMESTAMP, server_default=text("NOW()"))
 
-    # user = relationship("User", back_populates="cart_added")
+    product = relationship("Products")
 
+    user = relationship("User", back_populates="carts")
+
+    
 
 
 class SavedProducts(Base):
@@ -74,6 +80,9 @@ class SavedProducts(Base):
     user_id = Column(String(100),  ForeignKey("users.user_id"), nullable=False)
 
     date_added = Column(TIMESTAMP, server_default=text("NOW()"))
+
+    product = relationship("Products")
+    user = relationship("User", back_populates="saved_products")
 
 
 

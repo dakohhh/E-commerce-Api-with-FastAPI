@@ -3,3 +3,4 @@ aes.py
 fernet_crypto.txt
 .env
 /static
+/templates

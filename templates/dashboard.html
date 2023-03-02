@@ -152,7 +152,7 @@
 				{% for save_id, product_id in saved_items.items() %}
 				{% if product_id == product.product_id %}
 				<div style="float: right;">
-					<form action="/save_product/remove?id={{ save_id }}" method="POST">
+					<form action="/save_products/remove?id={{ save_id }}" method="POST">
 						<button name="save" type="submit" value="save item" class="btn btn-outline-primary"><i class="fas fa-check"></i> Saved</button>
 					</form>
 				</div>
@@ -160,7 +160,7 @@
 				{% endfor %}
 				{% else %}
 				<div style="float: right;">
-					<form action="/save_product?id={{ product.product_id }}" method="POST">
+					<form action="/save_products?id={{ product.product_id }}" method="POST">
 						<button name="save" type="submit" value="save item" class="btn btn-outline-success"><i class="fas fa-heart"></i> Save</button>
 					</form>
 				</div>
