@@ -50,64 +50,77 @@
   margin-right: auto;
   width: 80%;
 }
+
+.navbar {
+
+	position: fixed; /* Set the navbar to fixed position */
+	top: 0; /* Position the navbar at the top of the page */
+	width: 100%; /* Full width */
+  }
+  
+  
+  
+  /* Main content */
+  .main {
+	margin-top: 100px; /* Add a top margin to avoid content overlay */
+  }
   </style>
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav style="position:fixed;" class="navbar navbar-expand-lg navbar-light bg-light">
 	<div class="container-fluid">
-	  <a class="navbar-brand" style="color:black" href="#"><strong>WizShops</strong></a>
-	  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-		<span class="navbar-toggler-icon"></span>
-	  </button>
-	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-				<li class="nav-item">
-				<a class="nav-link active" aria-current="page" href="#">Home</a>
-				</li>
-			</ul>
-
-
-			<div class="" style="margin-right: 8px;">
-				<!-- Icon -->
-				<a class="text-reset me-3" href="#">
-					<i class="fas fa-shopping-cart"></i>
-					<span class="badge rounded-pill badge-notification bg-danger">{{ cart_items|length }}</span>
-				</a>
-			</div>
-			<div class="dropdown" style="margin-right: 80px;">
-				<button
-					class="dropdown-toggle"
-					type=""
-					id="dropdownMenuButton"
-					data-mdb-toggle="dropdown"
-					aria-expanded="false"
-					style="background-color: white;background: none;border:none"
-				>
-					<img
-					src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
-					class="rounded-circle"
-					height="30"
-					alt="Black and White Portrait of a Man"
-					loading="lazy"
-					/>
-				</button>
-				<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<li><a class="dropdown-item" href="#"><i class="fas fa-heart"></i> Saved Items</a></li>
-					<li><a class="dropdown-item" href="#">Settings</a></li>
-					<li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+		<a class="navbar-brand" style="color:black" href="#"><strong>WizShops</strong></a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<li class="nav-item">
+					<a class="nav-link active" aria-current="page" href="#">Home</a>
+					</li>
 				</ul>
+
+
+				<div class="" style="margin-right: 8px;">
+					<!-- Icon -->
+					<a class="text-reset me-3" href="#">
+						<i class="fas fa-shopping-cart"></i>
+						<span id="cart_lenght" class="badge rounded-pill badge-notification bg-danger">{{ cart_items|length }}</span>
+					</a>
+				</div>
+				<div class="dropdown" style="margin-right: 80px;">
+					<button
+						class="dropdown-toggle"
+						type=""
+						id="dropdownMenuButton"
+						data-mdb-toggle="dropdown"
+						aria-expanded="false"
+						style="background-color: white;background: none;border:none"
+					>
+						<img
+						src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+						class="rounded-circle"
+						height="30"
+						alt="Black and White Portrait of a Man"
+						loading="lazy"
+						/>
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						<li><a class="dropdown-item" href="{{ url_for('save_products') }}"><i class="fas fa-heart"></i> Saved Items</a></li>
+						<li><a class="dropdown-item" href="#">Settings</a></li>
+						<li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+					</ul>
+				</div>
 			</div>
-			
 	</div>
-  </nav>
-  <!-- Navbar -->
-  </header>
+</nav>
+	<!-- Navbar -->
+</header>
 
 
 
-<br>
 
 
-<div class="container">
+<div class="container main">
 
 <h1>Welcome, {{ user.fullname }}</h1>
 <br>
@@ -130,19 +143,23 @@
 				{% if product.product_id in cart_items.values() %}
 				{% for cart_id, product_id in cart_items.items() %}
 				{% if product_id == product.product_id %}
+
 				<div style="float: left;">
-					<form action="/cart/remove?id={{ cart_id }}" method="POST">
-						<button type="submit" class="btn btn-primary">Remove from cart</button>
+					<form class="__form" action="/cart?id={{ product.product_id }}">
+						<input type="hidden" value="remove" name="dert">
+						<button id="_form-btn" type="submit" class="btn btn-outline-danger"><i id="#rbtn" class="fas fa-trash"></i> Remove from cart</button>
 					</form>
 				</div>
+
 				{% endif %}
 				{% endfor %}
 
 				{%else%}
 
 				<div style="float: left;">
-					<form action="/cart?id={{ product.product_id }}" method="POST">
-						<button type="submit" class="btn btn-primary">Add to cart</button>
+					<form class="__form" action="/cart?id={{ product.product_id }}">
+						<input type="hidden" value="add" name="dert">
+						<button id="_form-btn" type="submit" class="btn btn-primary">Add to cart</button>
 					</form>
 				</div>
 
@@ -152,16 +169,18 @@
 				{% for save_id, product_id in saved_items.items() %}
 				{% if product_id == product.product_id %}
 				<div style="float: right;">
-					<form action="/save_products/remove?id={{ save_id }}" method="POST">
-						<button name="save" type="submit" value="save item" class="btn btn-outline-primary"><i class="fas fa-check"></i> Saved</button>
+					<form class="__form" action="/save_products?id={{ product.product_id }}">
+						<input type="hidden" value="saved" name="dert">
+						<button id="_form-btn" name="save" type="submit" value="save item" class="btn btn-outline-primary"><i class="fas fa-check"></i> Saved</button>
 					</form>
 				</div>
 				{% endif %}
 				{% endfor %}
 				{% else %}
 				<div style="float: right;">
-					<form action="/save_products?id={{ product.product_id }}" method="POST">
-						<button name="save" type="submit" value="save item" class="btn btn-outline-success"><i class="fas fa-heart"></i> Save</button>
+					<form class="__form"  action="/save_products?id={{ product.product_id }}" >
+						<input type="hidden" value="save" name="dert">
+						<button id="_form-btn" type="submit" value="save item" class="btn btn-outline-success"><i class="fas fa-heart"></i> Save</button>
 					</form>
 				</div>
 				{% endif %}
@@ -177,6 +196,7 @@
 </body>
 <script type="text/javascript" src="{{ url_for('static', path='js/mdb.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', path='js/script.js') }}"></script>
+
     <!-- Custom scripts -->
 
  

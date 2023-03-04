@@ -53,7 +53,7 @@ async def login(request:Request, request_form:OAuth2PasswordRequestForm=Depends(
 
     session_id = generate_hex(6)
 
-    session_expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
+    session_expire = datetime.datetime.utcnow() + datetime.timedelta(hours=1)
 
     await add_user_sessions(session_id, access_token, session_expire, db)
     

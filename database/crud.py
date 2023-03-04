@@ -127,8 +127,8 @@ async def add_product_to_cart(product_id:str, user_id:str, db:Session):
     db.refresh(new_item)
 
 
-async def remove_product_from_cart(cart_id:str, db:Session):
-    db.query(cart_table).filter(cart_table.cart_id == cart_id).delete(synchronize_session=False)
+async def remove_product_from_cart(product_id:str, user_id:str, db:Session):
+    db.query(cart_table).filter(cart_table.product_id == product_id and cart_table.user_id == user_id).delete(synchronize_session=False)
 
     db.commit()
     
@@ -164,8 +164,8 @@ async def add_save_product(product_id:str, user_id:str, db:Session):
 
 
     
-async def remove_save_product(save_id:str, db:Session):
-    db.query(save_table).filter(save_table.save_id == save_id).delete(synchronize_session=False)
+async def remove_save_product(product_id:str, user_id:str, db:Session):
+    db.query(save_table).filter(save_table.product_id == product_id and save_table.user_id == user_id).delete(synchronize_session=False)
 
     db.commit()
 
