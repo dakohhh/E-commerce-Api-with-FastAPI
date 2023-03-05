@@ -5,7 +5,7 @@ from database.database import get_db
 from sqlalchemy.orm import Session
 from models.model import UserData
 from response.response import redirect
-from database.crud import (add_product_to_cart, add_save_product, get_save_product_by_user, 
+from database.crud import (add_product_to_cart, add_save_product, get_products_from_cart, get_save_product_by_user, 
 remove_product_from_cart, remove_save_product, get_cart_items)
 
 
@@ -21,7 +21,18 @@ templates = Jinja2Templates(directory="templates")
 
 @shopping.get("/cart")
 async def cart_page(request:Request, user:UserData=Depends(get_user), db:Session=Depends(get_db)):
-    pass
+    
+    
+    cart_items = await get_products_from_cart(user.user_id, db)
+
+
+    total_price = sum([product.original_price for product in cart_items])
+
+    print(total_price)
+
+    context = {"request":request, "user":user , "cart_items": cart_items, "total_price":total_price}
+
+    return templates.TemplateResponse("cart.html", context)
 
 
 
