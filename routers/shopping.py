@@ -28,7 +28,6 @@ async def cart_page(request:Request, user:UserData=Depends(get_user), db:Session
 
     total_price = sum([product.original_price for product in cart_items])
 
-    print(total_price)
 
     context = {"request":request, "user":user , "cart_items": cart_items, "total_price":total_price}
 
