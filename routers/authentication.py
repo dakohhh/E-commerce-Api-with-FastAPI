@@ -1,14 +1,15 @@
 import datetime
-from fastapi import APIRouter, Depends, Request, status
+from fastapi import APIRouter, Depends, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.security import OAuth2PasswordRequestForm
 from controller.hex import generate_hex
+from controller.mail import send_email
 from database.database import get_db
-from database.crud import create_user, does_email_exist, auth_user, is_user_verified, update_token_and_expire, add_user_sessions, delete_session_data
+from database.crud import create_user, does_email_exist, auth_user, is_user_verified, add_user_sessions, delete_session_data
 from sqlalchemy.orm import Session
-from exceptions.custom_execption import NotFoundError, UnauthorizedExecption
-from models.model import Email, UserForm
-from response.response import customResponse, flash, parse_request_cookies, redirect
+from models.model import UserForm
+from response.response import flash, parse_request_cookies, redirect
+
 
 
 auth  = APIRouter(
@@ -96,11 +97,11 @@ async def signup(request:Request, user:UserForm=Depends() , db:Session=Depends(g
     token = generate_hex(20)
     expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=5)
 
+    verification_link = request.url_for("verify_email")+f"?email={user.email}&token={token}"
+
     await create_user(user, db, token, expire)
-    
-    verification_link = f"{request.client.host}:{8000}/verification?email={user.email}&token={token}"
-    
-    # send email
+
+    await send_email(user.email, verification_link, user.fullname)
 
     return flash("/signup", "success", "Email verification link sent")
 
@@ -108,30 +109,3 @@ async def signup(request:Request, user:UserForm=Depends() , db:Session=Depends(g
 
 
 
-
-
-
-
-
-
-@auth.post("/forgot_password")
-async def forgot_password(user:Email,request:Request, db:Session=Depends(get_db)):
-
-    if not await does_email_exist(user.email, db):
-        raise NotFoundError("Email does not exist")
-    
-    
-    if not await is_user_verified(user.email, db):
-        raise UnauthorizedExecption("User is not verified")
-
-
-    token = generate_hex(20)
-    expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=5)
-    
-    await update_token_and_expire(user.email,token, expire, db)
-
-    link = f"{request.client.host}:{8000}/verification/reset_password?email={user.email}&token={token}"
-
-    # send email
-
-    return customResponse(status.HTTP_200_OK, "Reset password link sent", data=link)

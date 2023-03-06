@@ -5,6 +5,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from routers.user import user as user
 from routers.authentication import auth
 from routers.shopping import shopping
+from routers.payment import  payment
 from routers.verification import verification
 from database.schema import Base
 from database.database import engine
@@ -21,6 +22,7 @@ app.include_router(user)
 app.include_router(auth)
 app.include_router(shopping)
 app.include_router(verification)
+app.include_router(payment)
 app.add_exception_handler(UserExistExecption, user_exist_exception_handler)
 app.add_exception_handler(UnauthorizedExecption, unauthorized_exception_handler)
 app.add_exception_handler(ServerErrorException, server_exception_handler)
@@ -42,9 +44,6 @@ templates = Jinja2Templates(directory="templates")
 @app.get('/')
 def welcome(request:Request):
     return templates.TemplateResponse("index.html", {"request":request})
-
-
-
 
 
 

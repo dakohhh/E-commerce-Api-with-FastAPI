@@ -1,16 +1,10 @@
 import datetime
-from fastapi import APIRouter, Depends, Request, status
+from fastapi import APIRouter, Depends, Request
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from controller.hex import generate_hex
 from database.database import get_db
-from response.response import customResponse
-from exceptions.custom_execption import NotFoundError, CredentialsException, UnauthorizedExecption
 from dotenv import load_dotenv
-from models.model import Email, Password
-from database.crud import (
-does_email_exist, get_verify_token_and_expire, update_user_verification, 
-is_user_verified, update_token_and_expire, update_user_password)
+from database.crud import (does_email_exist, get_verify_token_and_expire, update_user_verification, is_user_verified, update_token_and_expire)
 
 load_dotenv()
 
@@ -28,79 +22,27 @@ async def verify_email(request:Request, email:str, token:str, db:Session=Depends
 
     
     if not await does_email_exist(email, db):
-        raise NotFoundError("Email does not exist")
+        return templates.TemplateResponse("verify.html", {"request": request, "__response": "User not Found"})
     
 
     current_time = datetime.datetime.utcnow().timestamp()
     verify_token, expire_time = await get_verify_token_and_expire(email, db)
 
     if verify_token != token:
-        raise CredentialsException("Token is invalid")
+        return templates.TemplateResponse("verify.html", {"request": request, "__response": "Token is invalid", "__code":1})
 
     
     if current_time > expire_time.timestamp():
-        raise CredentialsException("Token has expired")
+        return templates.TemplateResponse("verify.html", {"request": request, "__response": "Token has expired", "__code":2})
 
     if await is_user_verified(email, db):
-        return customResponse(status.HTTP_200_OK, "User is already verified")
+        return templates.TemplateResponse("verify.html", {"request": request, "__response": "User is already verified", "__code":3})
+
 
     await update_user_verification(email, True, db)
 
     await update_token_and_expire(email, None, None, db)
 
-    return templates.TemplateResponse("verify.html", {"request": request})
+    return templates.TemplateResponse("verify.html", {"request": request,"__response": "Verified User Successfully", "__code":3})
 
     
-
-
-
-@verification.post("/request_verification_email")
-async def request_user_verification_email(user:Email, request:Request, db:Session=Depends(get_db)):
-    
-    if not await does_email_exist(user.email, db):
-        raise NotFoundError("Email does not exist")
-    
-    if await is_user_verified(user.email, db):
-        return customResponse(status.HTTP_200_OK, "User is already verified")
-    
-    token = generate_hex(20)
-
-    expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=5)
-
-    verification_link = f"{request.client.host}:{8000}/verification?email={user.email}&token={token}"
-
-
-    await update_token_and_expire(user.email, token, expire, db)
-    
-    #send email
-
-    return customResponse(status.HTTP_200_OK, "Verification email has been sent", data=verification_link)
-
-
-
-# Do a get for this with query(email, token)
-@verification.put("/verification/reset_password")
-async def reset_password(new_password:Password, email:str, token:str, db:Session=Depends(get_db)):
-
-    if not await does_email_exist(email, db):
-        raise NotFoundError("Email does not exist")
-    
-    if not await is_user_verified(email, db):
-        raise UnauthorizedExecption("User is not verified")
-    
-    current_time = datetime.datetime.utcnow().timestamp()
-    verify_token, expire_time = await get_verify_token_and_expire(email, db)
-
-    if verify_token != token:
-        raise CredentialsException("Token is invalid")
-
-    
-    if current_time > expire_time.timestamp():
-        raise CredentialsException("Token has expired")
-
-    
-    await update_user_password(email, new_password.password, db)
-
-    await update_token_and_expire(email, None, None, db)
-
-    return customResponse(status.HTTP_200_OK, "Password reset successfull")

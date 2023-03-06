@@ -22,14 +22,17 @@ templates = Jinja2Templates(directory="templates")
 @shopping.get("/cart")
 async def cart_page(request:Request, user:UserData=Depends(get_user), db:Session=Depends(get_db)):
     
-    
+    import random
+    from controller.hex import generate_hex
     cart_items = await get_products_from_cart(user.user_id, db)
 
 
     total_price = sum([product.original_price for product in cart_items])
 
+    order_no = f'{random.randint(10000, 99999)}{generate_hex(2)}'
 
-    context = {"request":request, "user":user , "cart_items": cart_items, "total_price":total_price}
+
+    context = {"request":request, "user":user , "cart_items": cart_items, "total_price":total_price, "order_no":order_no}
 
     return templates.TemplateResponse("cart.html", context)
 

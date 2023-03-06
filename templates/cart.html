@@ -83,6 +83,10 @@ margin-top: 100px; /* Add a top margin to avoid content overlay */
 					<li class="nav-item">
 					<a class="nav-link active" aria-current="page" href="#">Home</a>
 					</li>
+
+					<li class="nav-item">
+						<a class="nav-link active" aria-current="page" href="{{ url_for('dashboard_page') }}">Dashbaord</a>
+					</li>
 				</ul>
 
 
@@ -282,6 +286,8 @@ margin-top: 100px; /* Add a top margin to avoid content overlay */
 
 				<div class="card">
 					<div class="card-body">
+					<input id="total_price" type="hidden" value="{{ total_price }}">
+					<input id="order_no" type="hidden" value="{{ order_no }}">
 					<button id="check-btn" type="button" class="btn btn-success btn-block btn-lg"><i class="fa fa-credit-card"></i> <strong class="check-price"> Checkout: ${{ total_price }}</strong></button>
 					</div>
 				</div>
@@ -300,8 +306,10 @@ margin-top: 100px; /* Add a top margin to avoid content overlay */
 		
 	</div>
 </body>
+<script src="https://js.stripe.com/v3/"></script>
 <script type="text/javascript" src="{{ url_for('static', path='js/mdb.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', path='js/script.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', path='js/payment.js') }}"></script>
     <!-- Custom scripts -->
 
  

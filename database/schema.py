@@ -37,9 +37,9 @@ class User(Base):
 class Products(Base):
     __tablename__ = "products"
     
-    product_id = Column(String(100), primary_key=True, index=True)
+    product_id = Column(String(15), primary_key=True, index=True)
     
-    product_name = Column(String(100), nullable=False, index=True)
+    product_name = Column(String(50), nullable=False, index=True)
     
     category = Column(String(30), index=True)
     
@@ -48,6 +48,8 @@ class Products(Base):
     original_price = Column(DECIMAL(7, 2), nullable=False)
 
     discount = Column(Integer, nullable=True, default=3)
+
+    image = Column(String(7), index=True)
     
     date_added =  Column(TIMESTAMP, server_default=text("NOW()"))
 
@@ -57,9 +59,9 @@ class Cart(Base):
 
     cart_id = Column(Integer, primary_key=True, autoincrement=True, index=True)
 
-    product_id =  Column(String(100),  ForeignKey("products.product_id"), nullable=False)
+    product_id =  Column(String(15),  ForeignKey("products.product_id",  ondelete='CASCADE'), nullable=False)
 
-    user_id = Column(String(100),  ForeignKey("users.user_id"), nullable=False)
+    user_id = Column(String(15),  ForeignKey("users.user_id", ondelete='CASCADE'), nullable=False)
 
     date_added = Column(TIMESTAMP, server_default=text("NOW()"))
 
@@ -75,13 +77,14 @@ class SavedProducts(Base):
 
     save_id = Column(Integer, primary_key=True, autoincrement=True, index=True)
 
-    product_id =  Column(String(100),  ForeignKey("products.product_id"), nullable=False)
+    product_id =  Column(String(15),  ForeignKey("products.product_id",ondelete='CASCADE'), nullable=False)
 
-    user_id = Column(String(100),  ForeignKey("users.user_id"), nullable=False)
+    user_id = Column(String(15),  ForeignKey("users.user_id",ondelete='CASCADE'), nullable=False)
 
     date_added = Column(TIMESTAMP, server_default=text("NOW()"))
 
     product = relationship("Products")
+
     user = relationship("User", back_populates="saved_products")
 
 

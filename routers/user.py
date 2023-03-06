@@ -6,7 +6,7 @@ from database.crud import get_all_product, get_cart_items, get_saved_products
 from models.model import UserData
 from dotenv import load_dotenv
 from authentication.dependencies import get_user
-
+from response.response import parse_request_cookies
 load_dotenv()
 
 
@@ -24,19 +24,22 @@ templates = Jinja2Templates(directory="templates")
 @user.get("/dashboard")
 async def dashboard_page(request:Request, user:UserData=Depends(get_user), db:Session=Depends(get_db)):
 
-    products = await get_all_product(db)
-    cart_items = await get_cart_items(user.user_id, db)
-    saved_items = await get_saved_products(user.user_id, db)
+	get_flash_msg = parse_request_cookies(request, "msg")
+		
 
-    cart_items = {items.cart_id : items.product_id for items in cart_items}
+	products = await get_all_product(db)
+	cart_items = await get_cart_items(user.user_id, db)
+	saved_items = await get_saved_products(user.user_id, db)
 
-    saved_items = {items.save_id : items.product_id for items in saved_items}
-    
+	cart_items = {items.cart_id : items.product_id for items in cart_items}
 
-    
-    context= {"request":request, "user":user, "products":products, "cart_items":cart_items, "saved_items":saved_items}
+	saved_items = {items.save_id : items.product_id for items in saved_items}
 
-    return templates.TemplateResponse("dashboard.html", context)
+
+
+	context= {"request":request, "user":user, "products":products, "cart_items":cart_items, "saved_items":saved_items, "get_flash_msg":get_flash_msg}
+
+	return templates.TemplateResponse("dashboard.html", context)
 
 
 
