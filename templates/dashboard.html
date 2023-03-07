@@ -33,7 +33,7 @@
   padding: 5px;
   box-sizing: border-box;
   width: 350px;
-  height: 625px;
+  height: 500px;
   transition: all linear 200ms;
 }
 .carde:hover{
@@ -57,6 +57,8 @@
 	top: 0; /* Position the navbar at the top of the page */
 	width: 100%; /* Full width */
   }
+
+
   
   
   
@@ -130,12 +132,12 @@
 {% if get_flash_msg[0] == 'success' %}
 <div id="__alert" class="alert alert-{{ get_flash_msg[0] }} alert-dismissible fade show" role="alert">
 	<strong>Congrats</strong> your order has been placed. <strong>{{ get_flash_msg[1] }}</strong>
-	<button id="__alertbtn" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	<button id="__alertbtn" type="button" class="btn-close" onclick="alert_close()"></button>
 </div>
 {% else %}
 <div id="__alert" class="alert alert-{{ get_flash_msg[0] }} alert-dismissible fade show" role="alert">
 	<strong>Sorry</strong> an error has in the transaction,please try again <strong>{{ get_flash_msg[1] }}</strong>
-	<button id="__alertbtn" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	<button id="__alertbtn" type="button" class="btn-close" onclick="alert_close()"></button>
 </div>
 {% endif %}
 {% endif %}
@@ -147,10 +149,10 @@
 		{% for product in products %}
 			<div class="m-2 carde">
 				<div class="card-body">
-					<img src="{{ url_for('static', path='img/'+product.image) }}" class="img-fluid center rounded" height="10px" width="30px" style="margin-bottom: 15px;">
+					<img src="{{ url_for('static', path='img/'+product.image) }}" class="center rounded" height="200px" width="30px" style="margin-bottom: 15px;">
 					<form>
 						<h5 class="card-title" style="text-align: center;">{{ product.product_name }}</h5>
-						<p class="card-text">{{ product.description }}</p>
+						<p class="card-text">{{ product.description[:40] }}{% if product.description|length > 40 %}...{% endif %}</p>
 						
 						<h5>Price: ${{ product.original_price }}</h3>
 						<h1 style="margin-top: 20px"></h1>

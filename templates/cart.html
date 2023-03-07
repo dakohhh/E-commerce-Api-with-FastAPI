@@ -142,7 +142,7 @@ margin-top: 100px; /* Add a top margin to avoid content overlay */
 					<h3 class="">Shopping Cart</h3>
 				</div>
 
-				<div class="col-10 __items">
+				<div id="__contain" class="col-10 __items">
 		
 
 				<div class="__exist"></div>
@@ -155,8 +155,10 @@ margin-top: 100px; /* Add a top margin to avoid content overlay */
 					<div class="row d-flex justify-content-between align-items-center">
 						<div class="col-md-2 col-lg-2 col-xl-2">
 						<img
-							src="https://mdbcdn.b-cdn.net/img/new/standard/nature/111.webp"
-							class="img-fluid rounded-3" alt="Cotton T-shirt">
+							src="{{ url_for('static', path='img/'+product.image) }}"
+							width="50px"
+							height="50px"
+							class=" rounded-3" alt="Cotton T-shirt">
 						</div>
 						<div class="col-md-3 col-lg-3 col-xl-3">
 						<h5 class="lead fw-normal mb-2">{{ product.product_name }}</h5>
@@ -243,7 +245,7 @@ margin-top: 100px; /* Add a top margin to avoid content overlay */
 
 				{%else%}
 
-				<div class="card mb-4">
+				<div id="" class="card mb-4">
 					<div class="card-body p-4 d-flex flex-row">
 					<div class="form-outline flex-fill">
 						<input type="text" id="form1" class="form-control form-control-lg" />
@@ -253,7 +255,8 @@ margin-top: 100px; /* Add a top margin to avoid content overlay */
 					</div>
 				</div>
 
-				<div class="card mb-4">
+
+				<div id="___checkout" class="card mb-4">
 					<div class="card-body p-4 d-flex flex-row">
 						<div class="form-outline flex-fill">
 							<h5 class="mb-0">Summary</h5>
