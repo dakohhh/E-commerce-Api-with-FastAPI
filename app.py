@@ -1,6 +1,7 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy.orm import Session
 from starlette.middleware.sessions import SessionMiddleware
 from routers.user import user as user
 from routers.authentication import auth
@@ -8,8 +9,11 @@ from routers.shopping import shopping
 from routers.payment import  payment
 from routers.verification import verification
 from database.schema import Base
-from database.database import engine
+from database.database import engine, get_db
 from exceptions.custom_execption import *
+
+
+from database.schema import Products as product_table
 
 
 Base.metadata.create_all(bind=engine)
