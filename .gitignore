@@ -1,7 +1,7 @@
 .env
-/env
-/__pycache__
-/static
-/templates
+env/
+__pycache__/
+static/
+templates/
 Procfile
 product.json
