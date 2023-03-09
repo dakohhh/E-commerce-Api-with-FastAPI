@@ -11,7 +11,7 @@ document.getElementById('check-btn').addEventListener('click', async function() 
 
         const order_no = document.getElementById("order_no").value;
 
-        const url = `http://127.0.0.1:8000/create-payment-session?amount=${total_price}&currency=USD&order_no=${order_no}`;
+        const url = `https://wizshop.onrender.com/create-payment-session?amount=${total_price}&currency=USD&order_no=${order_no}`;
         const response = await fetch(url, {
             method: 'POST'
         });
