@@ -1,5 +1,7 @@
 .env
-env
-__pycache__
+/env
+/__pycache__
 /static
 /templates
+Procfile
+product.json
