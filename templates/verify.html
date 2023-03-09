@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Verification</title>
+    <!-- Font Awesome -->
+    <!-- MDB -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/mdb.min.css') }}" />
+
+</head>
+<body>
+      <!--Main Navigation-->
+  <header>
+    <style>
+      #intro {
+        /*background-image: url(https://mdbootstrap.com/img/new/fluid/city/008.jpg);*/
+        height: 100vh;
+        background-color: #fff;
+      }
+
+      /* Height for devices larger than 576px */
+      @media (min-width: 992px) {
+        #intro {
+          margin-top: -58.59px;
+        }
+      }
+
+      .navbar .nav-link {
+        color: rgb(0, 0, 0) !important;
+      }
+      body{
+        background-color: #fff;
+      }
+    </style>
+
+    <!-- Navbar -->
+
+    <!-- Background image -->
+    <div id="intro" class="bg-image shadow-2-strong">
+      <div class="mask d-flex align-items-center h-100" style="background-color: #fff;">
+        <div class="container">
+            <h1>{{ __response }}</h1>
+
+            {% if __code == 3 %}
+              <a href="{{ url_for("login_page") }}" class="btn btn-primary">Go to Login</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Background image -->
+  </header>
+  <!--Main Navigation-->
+
+  
+  <!--Footer-->
+    <!-- MDB -->
+    <script type="text/javascript" src="{{ url_for('static', path='js/mdb.min.js') }}"></script>
+    <!-- Custom scripts -->
+    <script type="text/javascript" src="{{ url_for('static', path='js/mdb.min.js') }}"></script>
+</body>
+</html>

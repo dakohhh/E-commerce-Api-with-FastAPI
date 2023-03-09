@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Saved Items</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" />
+    <!-- MDB -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/mdb.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', path='css/mdb.min.css') }}" />
+    <!-- Custom styles -->
+    <!-- <link rel="stylesheet" href="css/style.css" /> -->
+</head>
+<body>
+    <!--Main Navigation-->
+<header>
+  <style>
+    body{
+      background-color: #fff;
+    }
+
+
+	.carde{
+  border-radius: 8px;
+  border: 1px solid #cccccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  box-sizing: border-box;
+  width: 350px;
+  height: 425px;
+  transition: all linear 200ms;
+}
+.carde:hover{
+  transform: scale(1.1);
+  transition: all linear 200ms;
+  z-index: 1;
+  box-shadow: 1px 1px 10px rgba(0,0,0,.3);
+  cursor: pointer;
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+}
+
+  .navbar {
+
+	position: fixed; /* Set the navbar to fixed position */
+	top: 0; /* Position the navbar at the top of the page */
+	width: 100%; /* Full width */
+  }
+  
+  
+  
+  /* Main content */
+  .main {
+	margin-top: 100px; /* Add a top margin to avoid content overlay */
+}
+  </style>
+<!-- Navbar -->
+<nav style="position:fixed;" class="navbar navbar-expand-lg navbar-light bg-light">
+	<div class="container-fluid">
+		<a class="navbar-brand" style="color:black" href="#"><strong>WizShops</strong></a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<li class="nav-item">
+					<a class="nav-link active" aria-current="page" href="#">Home</a>
+					</li>
+				</ul>
+
+
+				<div class="" style="margin-right: 8px;">
+					<!-- Icon -->
+					<a class="text-reset me-3" href="{{ url_for('cart_page') }}">
+						<i class="fas fa-shopping-cart"></i>
+						<span id="cart_lenght" class="badge rounded-pill badge-notification bg-danger">{{ cart_items|length }}</span>
+					</a>
+				</div>
+				<div class="dropdown" style="margin-right: 80px;">
+					<button
+						class="dropdown-toggle"
+						type=""
+						id="dropdownMenuButton"
+						data-mdb-toggle="dropdown"
+						aria-expanded="false"
+						style="background-color: white;background: none;border:none"
+					>
+						<img
+						src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+						class="rounded-circle"
+						height="30"
+						alt="Black and White Portrait of a Man"
+						loading="lazy"
+						/>
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						<li><a class="dropdown-item" href="{{ url_for('save_products') }}"><i class="fas fa-heart"></i> Saved Items</a></li>
+						<li><a class="dropdown-item" href="#">Settings</a></li>
+						<li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+					</ul>
+				</div>
+			</div>
+	</div>
+</nav>
+	<!-- Navbar -->
+</header>
+
+
+
+
+
+<div class="container main">
+
+<h1>Welcome, {{ user.fullname }}</h1>
+<br>
+
+<hr>
+
+<h3 style="display:inline-block;"> Your Saved items</h3><a style="display:inline-block; margin-left:30px;"href="{{ url_for("dashboard_page") }}" class="btn btn-primary">Go back to Dashboard</a>
+
+<h1 style="margin-top: 20px"></h1>
+<div class="container d-flex flex-wrap align-items-center">
+		{% for saved_product ,in_cart, cart_id in saved_products %}
+		<div class="m-2 carde">
+			<div class="card-body">
+				<img src="{{ url_for('static', path='img/'+saved_product.image) }}" class="center rounded" height="200px" width="30px" style="margin-bottom: 15px;">
+				<form>
+					<h5 class="card-title" style="text-align: center;">{{ saved_product.product_name }}</h5>
+					<p class="card-text">{{saved_product.description}}</p>
+					
+					<h5>Price: ${{ saved_product.original_price }} </h3>
+					<h1 style="margin-top: 20px"></h1>
+				</form>
+				
+				{% if in_cart %}
+				<div style="float: left;">
+					<form class="__form" action="/cart?id={{ saved_product.product_id }}">
+						<input type="hidden" value="remove" name="dert">
+						<button id="_form-btn" type="submit" class="btn btn-outline-danger"><i class="fas fa-trash"></i> Remove from cart</button>
+					</form>
+				</div>
+
+				{% else %}
+				<div style="float: left;">
+					<form class="__form" action="/cart?id={{ saved_product.product_id }}">
+						<input type="hidden" value="add" name="dert">
+						<button id="_form-btn" type="submit" class="btn btn-primary">Add to cart</button>
+					</form>
+				</div>
+				{% endif %}
+			</div>
+
+		</div>
+		{% endfor %}
+
+
+	
+</div>
+</div>
+</body>
+<script type="text/javascript" src="{{ url_for('static', path='js/mdb.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', path='js/script.js') }}"></script>
+    <!-- Custom scripts -->
+
+ 
