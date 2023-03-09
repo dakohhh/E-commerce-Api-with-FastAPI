@@ -1,6 +1,3 @@
-aes.py
-/__pycache__
-fernet_crypto.txt
 .env
-/static
-/templates
+env
+__pycache__
