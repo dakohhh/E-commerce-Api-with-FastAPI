@@ -39,7 +39,10 @@ app.add_middleware(SessionMiddleware, secret_key="RapemanBruh", max_age=None)
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
 templates = Jinja2Templates(directory="templates")
+
+
 
 
 
